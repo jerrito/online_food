@@ -45,22 +45,22 @@ class MainInput extends StatelessWidget {
       obscureText: obscureText,
       cursorColor: Colors.black54,
       decoration: InputDecoration(
-          iconColor: Colors.amberAccent,
+          iconColor: Colors.green,
           hintText: hintText,
           enabledBorder: OutlineInputBorder(
               borderSide: const BorderSide(
-                  color: Colors.black54, width: 2, style: BorderStyle.solid),
+                  color: Colors.green, width: 2, style: BorderStyle.solid),
               borderRadius: BorderRadius.circular(20)),
           focusedBorder: OutlineInputBorder(
               borderSide: const BorderSide(
-                  color: Colors.amberAccent,
+                  color: Colors.green,
                   width: 2,
                   style: BorderStyle.solid),
               borderRadius: BorderRadius.circular(20)),
           prefixIcon: prefixIcon,
           suffixIcon: suffixIcon,
           label: label,
-          labelStyle: const TextStyle(color: Colors.black),
+          labelStyle: const TextStyle(color: Colors.green),
           border: OutlineInputBorder(
               borderSide: const BorderSide(
                   color: Colors.black54, width: 2, style: BorderStyle.solid),
@@ -110,7 +110,7 @@ class SecondaryInput extends StatelessWidget {
         color: Colors.white,
       ),
       onChanged: onChanged,
-      autofocus: true,
+      //autofocus: true,
       textAlignVertical: const TextAlignVertical(y: 1),
       textInputAction: TextInputAction.send,
       initialValue: initialValue,
@@ -119,18 +119,19 @@ class SecondaryInput extends StatelessWidget {
       keyboardType: keyboardType,
       obscuringCharacter: '•',
       obscureText: obscureText,
-      cursorColor: Colors.pink,
+      cursorColor: Colors.black,
       decoration: InputDecoration(
-        iconColor: Colors.amberAccent,
+        iconColor: Colors.green,
         hintText: hintText,
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
 //         enabledBorder: UnderlineInputBorder(
 //
 //         ),
-        border: UnderlineInputBorder(
+        border: const UnderlineInputBorder(
             borderSide: BorderSide(
-                color: Colors.pink, width: 1, style: BorderStyle.solid),
+                color: Colors.green, width: 1,
+                style: BorderStyle.solid),
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(0), topRight: Radius.circular(0))),
 

@@ -10,18 +10,19 @@ class ProfileContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(5),
-        margin: EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.all(5),
+        margin: const EdgeInsets.only(bottom: 10),
         height: 70,
         width: double.infinity,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5), color: Colors.white70),
+            borderRadius: BorderRadius.circular(5),
+            color: Colors.white),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text("$title"),
             IconButton(
-              icon: Icon(Icons.edit),
+              icon: const Icon(Icons.edit,color:Colors.green),
               onPressed: onPressed,
             )
           ],

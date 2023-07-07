@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:online_food/user.dart';
 
-enum QueryStatus { Successful, Failed }
+enum QueryStatus { successful, failed }
 
 class QueryResult<T> {
   QueryStatus? status;
@@ -21,34 +21,29 @@ class FirebaseServices {
 
   final usersRef = FirebaseFirestore.instance
       .collection('pashewFoodAccount')
-      .withConverter<User>(
-        fromFirestore: (snapshot, _) => User.fromJson(snapshot.data()!),
-        toFirestore: (user, _) => user.toJson(),
+      .withConverter<Customer>(
+        fromFirestore: (snapshot, _) => Customer.fromJson(snapshot.data()!),
+        toFirestore: (customer, _) => customer.toJson(),
       );
-  // final medicalRef = FirebaseFirestore.instance
-  //     .collection('medicalInfo')
-  //     .withConverter<MedicalInfo>(
-  //       fromFirestore: (snapshot, _) => MedicalInfo.fromJson(snapshot.data()!),
-  //       toFirestore: (medicalInfo, _) => medicalInfo.toJson(),
-  //     );
 
-  Future<QueryResult<User>?> getUser({required String phoneNumber}) async {
-    QueryResult<User>? result;
 
-    //
+  Future<QueryResult<Customer>?> getUser({required String phoneNumber}) async {
+    QueryResult<Customer>? result;
     return await usersRef
         .where("number", isEqualTo: phoneNumber)
         .get()
         .then((snapshot) {
       var userSnapShot = snapshot.docs;
 
-      User? data;
+      Customer? data;
       if (userSnapShot.isNotEmpty) {
         data = userSnapShot.first.data();
         data.id = userSnapShot.first.id;
+        //data.id=
+        print(data.id);
       }
 
-      var status = QueryStatus.Successful;
+      var status = QueryStatus.successful;
 
       result = QueryResult(
         status: status,
@@ -59,53 +54,18 @@ class FirebaseServices {
       if (kDebugMode) {
         print("Failed to get user: $error");
       }
-      var status = QueryStatus.Failed;
+      var status = QueryStatus.failed;
       var errorMsg = error;
       result = QueryResult(status: status, error: errorMsg);
 
       return result;
     });
   }
+  
 
-  // Future<QueryResult<MedicalInfo>?> getMedicalInfo(
-  //     {required String phoneNumber}) async {
-  //   QueryResult<MedicalInfo>? result;
-  //
-  //   //
-  //   return await medicalRef
-  //       .where("number", isEqualTo: phoneNumber)
-  //       .get()
-  //       .then((snapshot) {
-  //     var userSnapShot = snapshot.docs;
-  //
-  //     MedicalInfo? data;
-  //     if (userSnapShot.isNotEmpty) {
-  //       data = userSnapShot.first.data();
-  //       data.id = userSnapShot.first.id;
-  //     }
-  //
-  //     var status = QueryStatus.Successful;
-  //
-  //     result = QueryResult(
-  //       status: status,
-  //       data: data,
-  //     );
-  //     return result;
-  //   }).catchError((error) {
-  //     if (kDebugMode) {
-  //       print("Failed to get user: $error");
-  //     }
-  //     var status = QueryStatus.Failed;
-  //     var errorMsg = error;
-  //     result = QueryResult(status: status, error: errorMsg);
-  //
-  //     return result;
-  //   });
-  // }
-
-  Future<QueryResult<User>?> getUser_2(
+  Future<QueryResult<Customer>?> getUser_2(
       {required String phoneNumber, required String password}) async {
-    QueryResult<User>? result;
+    QueryResult<Customer>? result;
 
     //
     return await usersRef
@@ -114,13 +74,13 @@ class FirebaseServices {
         .then((snapshot) {
       var userSnapShot = snapshot.docs;
 
-      User? data;
+      Customer? data;
       if (userSnapShot.isNotEmpty) {
         data = userSnapShot.first.data();
         data.id = userSnapShot.first.id;
       }
 
-      var status = QueryStatus.Successful;
+      var status = QueryStatus.successful;
 
       result = QueryResult(
         status: status,
@@ -131,7 +91,7 @@ class FirebaseServices {
       if (kDebugMode) {
         print("Failed to get user: $error");
       }
-      var status = QueryStatus.Failed;
+      var status = QueryStatus.failed;
       var errorMsg = error;
       result = QueryResult(status: status, error: errorMsg);
 
@@ -139,34 +99,35 @@ class FirebaseServices {
     });
   }
 
-  Future<QueryResult<User>?>? saveUser({required User user}) async {
-    QueryResult<User>? result;
+  Future<QueryResult<Customer>?>? saveUser({required Customer user}) async {
+    QueryResult<Customer>? result;
 
     //
     await usersRef.add(user).then((value) {
-      result = QueryResult(status: QueryStatus.Successful);
+      result = QueryResult(status: QueryStatus.successful);
     }).catchError((error) {
       if (kDebugMode) {
         print("Failed to add user: $error");
       }
-      result?.status = QueryStatus.Failed;
+      result?.status = QueryStatus.failed;
       result?.error = error;
     });
 
     return result;
   }
 
-  Future<QueryResult<User>?> updateUser({required User user}) async {
-    QueryResult<User>? result;
+  Future<QueryResult<Customer>?> updateUser({required Customer customer}) async {
+    QueryResult<Customer>? result;
+    print(customer.id);
 
     //
-    await usersRef.doc(user.id).update(user.toJson()).then((value) {
-      result = QueryResult(status: QueryStatus.Successful);
+    await usersRef.doc(customer.id).update(customer.toJson()).then((value) {
+      result = QueryResult(status: QueryStatus.successful);
     }).catchError((error) {
       if (kDebugMode) {
         print("Failed to update user: $error");
       }
-      result?.status = QueryStatus.Failed;
+      result?.status = QueryStatus.failed;
       result?.error = error;
     });
 

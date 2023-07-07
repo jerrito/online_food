@@ -36,7 +36,7 @@ class _SignUpPageState extends State<SignUpPage> {
   GlobalKey<ScaffoldMessengerState> scaffoldMessenger = GlobalKey();
   GlobalKey<FormState> form = GlobalKey();
   var firebaseService = FirebaseServices();
-  UserProvider? userProvider;
+  CustomerProvider? userProvider;
   TextEditingController fullName = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController phoneNumber = TextEditingController();
@@ -96,7 +96,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               style: TextStyle(
                                   fontSize: 30,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.black),
+                                  ),
                             ),
                           ),
                           Center(
@@ -104,7 +104,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               backgroundColor: Colors.grey,
                               radius: hS * 15,
                               backgroundImage: Image.asset(
-                                "./assets/images/$pic",
+                                "./assets/images/deliver.png",
                                 height: h / 3,
                                 width: w,
                               ).image,
@@ -152,7 +152,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             suffixIcon: IconButton(
                                 icon: obscure_2 == true
                                     ? SvgPicture.asset("./assets/svgs/eye.svg",
-                                        color: Colors.pink)
+                                        color: Colors.green)
                                     : SvgPicture.asset(
                                         "./assets/svgs/eye-off.svg",
                                         color: Colors.grey),
@@ -172,7 +172,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     SecondaryButton(
                       foregroundColor: Colors.white,
-                      backgroundColor: Colors.pink,
+                      backgroundColor: Colors.green,
                       onPressed: loadingOrNot
                           ? null
                           : () async {
@@ -185,7 +185,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 // Navigator.pushNamed(context,"homepage");
                               }
                             },
-                      color: Colors.pink,
+                      color: Colors.green,
                       text: 'Signup',
                     ),
                     Center(
@@ -264,7 +264,7 @@ class _SignUpPageState extends State<SignUpPage> {
         await FirebaseServices().getUser(phoneNumber: completePhoneNumber);
 
     //  print(resultMain?.status);
-    if (resultMain?.status == QueryStatus.Successful) {
+    if (resultMain?.status == QueryStatus.successful) {
       var userOld = resultMain?.data;
       if (userOld?.number == completePhoneNumber) {
         setState(() {
@@ -354,20 +354,22 @@ class _SignUpPageState extends State<SignUpPage> {
                 //name: username.text,
                 see: "register",
                 onSuccessCallback: () async {
-                  var user = User_main.User(
+                  var user = User_main.Customer(
+                      // id: auth.currentUser?.uid,
                       number: "$countryCode${phoneNumber.text}",
                       fullName: fullName.text,
                       email: email.text,
                       password: password.text,
                       location: "",
+                      latitude: 0,
+                      longitude: 5,
                       image: "");
                   var result = await FirebaseServices().saveUser(user: user);
-                  if (result?.status == QueryStatus.Successful) {
+                  if (result?.status == QueryStatus.successful) {
                     finalRegister();
                     // await uploadingData(name.text, number.text, airtime.toString(),
                     // data.toString(), sms.toString(), pin1.text);
-                    if (!context.mounted) return;
-                    await Navigator.pushNamed(context, 'home');
+
                   }
                 }),
           ),
@@ -377,24 +379,26 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void finalRegister() async {
-    userProvider = context.read<UserProvider>();
+    userProvider = context.read<CustomerProvider>();
     // print("Account success");
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      duration: Duration(seconds: 5),
-      content: Text("Successfully registered",
-          style: TextStyle(color: Colors.white)),
-      backgroundColor: Color.fromRGBO(20, 100, 150, 1),
-    ));
     var result2 = await userProvider?.getUser(
         phoneNumber: "$countryCode${phoneNumber.text}");
+    if(!context.mounted)return;
+    ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+      duration: const Duration(seconds: 5),
+      content: Text("Successfully registered ${userProvider?.appUser?.fullName}",
+          style: const TextStyle(color: Colors.white)),
+      backgroundColor: const Color.fromRGBO(20, 100, 150, 1),
+    ));
+
     // print(result2?.status);
-    if (result2?.status == QueryStatus.Successful) {
+    if (result2?.status == QueryStatus.successful) {
       navigate();
     }
   }
 
   navigate() {
-    return Navigator.pushNamed(context, 'homepage');
+    return Navigator.pushNamed(context, 'home');
   }
 
   _onCodeTimeout(String timeout) {

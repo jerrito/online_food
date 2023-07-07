@@ -10,15 +10,19 @@ import 'package:online_food/feature/presentation/pages/delivery.dart';
 import 'package:online_food/feature/presentation/pages/home.dart';
 //import 'package:online_food/homePage.dart';
 import 'package:online_food/feature/presentation/pages/login.dart';
+import 'package:online_food/feature/presentation/pages/order_map.dart';
 import 'package:online_food/feature/presentation/pages/signUp.dart';
 import 'package:online_food/feature/presentation/pages/specific_buy_item.dart';
+import 'package:online_food/feature/presentation/pages/your_order.dart';
 import 'package:online_food/feature/presentation/widgets/MainButton.dart';
 import 'package:online_food/firebase_options.dart';
 //import 'package:online_food/profile.dart';
 import 'package:online_food/splash.dart';
 import 'package:online_food/userProvider.dart';
+import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:theme_manager/theme_manager.dart';
 
 int indexed = 0;
@@ -27,13 +31,35 @@ double wS = SizeConfig.SW;
 double h = SizeConfig.H;
 double hS = SizeConfig.SV;
 
+Future<Database> getDatabase()async{
+  var databasesPath = await getDatabasesPath();
+  String path = ('${databasesPath}demo.db');
+  print(path);
+  Database database = await openDatabase(path, version: 1,
+      onCreate: (Database db, int version) async {
+// When creating the db, create the table
+        await db.execute(
+            'CREATE TABLE CART (id INTEGER PRIMARY KEY, name TEXT, amount INTEGER, title TEXT)');
+      });
+  return database;
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(options:
+  DefaultFirebaseOptions.currentPlatform);
+  final database = openDatabase(
+    join(await getDatabasesPath(), 'pashewCart.db'),
+    onCreate: (db, version) {
+      return db.execute(
+          'CREATE TABLE IF NOT EXISTS CARTDATA ( name TEXT PRIMARY KEY, amount INTEGER,totalAmount INTEGER, title TEXT, quantity INTEGER)');
+    },
+    version: 1,
+  );
   runApp(const AppPage());
 }
 
@@ -53,13 +79,17 @@ class AppPage extends StatelessWidget {
         return ThemeManager(
             defaultBrightnessPreference: BrightnessPreference.system,
             data: (Brightness brightness) => ThemeData(
-                  primarySwatch: brightness == Brightness.dark
-                      ? Colors.amber
-                      : Colors.blue,
+              // colorScheme: ColorScheme.fromSeed(
+              //   primary: Color.fromRGBO(50, 250,40, 1),
+              //     seedColor: Color.fromRGBO(50, 250,40, 1)),
+              useMaterial3: true,
+                  // primarySwatch: brightness == Brightness.dark
+                  //     ? Colors.amber
+                  //     : Colors.green,
                   primaryIconTheme: IconThemeData(
                       color: brightness == Brightness.dark
                           ? Colors.amber
-                          : Colors.black),
+                          : Colors.green),
                   textTheme: Theme.of(context).textTheme.apply(
                       fontFamily: "PlayfairDisplay-VariableFont_wght",
                       decorationColor: brightness == Brightness.dark
@@ -81,13 +111,14 @@ class AppPage extends StatelessWidget {
               return MultiProvider(
                   providers: [
                     ListenableProvider(
-                      create: (_) => UserProvider(preferences: snapshot.data),
+                      create: (_) => CustomerProvider(preferences: snapshot.data),
                     ),
                     // ListenableProvider(
                     //     create: (_) =>
                     //         MedicalProvider(preferences: snapshot.data)),
                   ],
                   child: MaterialApp(
+
                     supportedLocales: const [
                       Locale("af"),
                       Locale("am"),
@@ -169,110 +200,20 @@ class AppPage extends StatelessWidget {
                     theme: theme,
                     initialRoute: "splash",
                     routes: {
-                      "homeScreen": (context) => const HomeScreen(),
                       "login": (context) => const LoginSignUp(),
                       "splash": (context) => const Splashscreen(),
                       "signup": (context) => const SignUpPage(),
                       "home": (context) => const HomePage(),
                       "specificBuyItem": (context) => const SpecificBuyItem(),
                       "cart": (context) => const Cart(),
-                      "delivery": (context) => const DeliveryLocation(),
+                     // "delivery": (context) => const DeliveryLocation(),
+                      "your_order": (context) => const YourOrder(),
+                      "orderMap": (context) => const OrderMap(),
+
                     },
                   ));
             });
       },
-    );
-  }
-}
-
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  @override
-  Widget build(BuildContext context) {
-    SizeConfig().init(context);
-    return Scaffold(
-      body: Container(
-          decoration: const BoxDecoration(
-            color: Color.fromRGBO(210, 230, 250, 0.2),
-          ),
-          padding: const EdgeInsets.all(10),
-
-          // margin: const EdgeInsets.only(left: 150),
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            const SizedBox(
-              height: 30,
-            ),
-            Expanded(
-              child: ListView(children: [
-                const Center(
-                    child: Text(
-                  "ONLINE HEALTH CARE",
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                )),
-                const SizedBox(
-                  height: 50,
-                ),
-                Center(
-                  child: CircleAvatar(
-                    backgroundColor: Colors.grey,
-                    radius: hS * 18.75,
-                    backgroundImage: Image.asset(
-                      "./assets/images/doctor_1.jpg",
-                      height: h / 3,
-                      width: w,
-                    ).image,
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                const Center(
-                    child: Text(
-                  "Good Day Dear",
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
-                )),
-                const Center(
-                    child: Text(
-                  "Welcome To Quality Online HealthCare ",
-                  style: TextStyle(fontSize: 16, color: Colors.black),
-                )),
-                const Center(
-                    child: Text(
-                  "Here your health is our priority",
-                  style: TextStyle(fontSize: 16, color: Colors.black),
-                )),
-              ]),
-            ),
-            SecondaryButton(
-              onPressed: () {
-                Navigator.pushNamed(context, "login");
-              },
-              foregroundColor: Colors.white,
-              backgroundColor: Colors.pink,
-              color: Colors.pink,
-              text: "Login",
-            ),
-            const SizedBox(height: 10),
-            SecondaryButton(
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.pink,
-              onPressed: () {
-                Navigator.pushNamed(context, "signup");
-              },
-              color: Colors.pink,
-              text: "Signup",
-            ),
-            const SizedBox(height: 20)
-          ])),
     );
   }
 }

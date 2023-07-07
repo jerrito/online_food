@@ -13,23 +13,23 @@ class Drawers extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
         child: Column(
-            //mainAxisAlignment: MainAxisAlignment.end,
+           // mainAxisAlignment: MainAxisAlignment.center,
             //crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
           Container(
             width: double.infinity,
             height: 150,
-            color: Colors.amber,
+            color: Colors.green,
             child: Column(
               children: [
-                SizedBox(height: hS * 6),
+                SizedBox(height: hS * 10),
                 Text("Joined ",
                     style: TextStyle(
-                        fontSize: 15, height: wS * 0.25, color: Colors.white)),
-                SizedBox(height: 10),
+                        fontSize: 15, height: wS * 0.25,color:Colors.white)),
+                const SizedBox(height: 10),
                 Text("Jerry Boateng",
                     style: TextStyle(
-                        fontSize: 15, height: wS * 0.25, color: Colors.white)),
+                        fontSize: 15, height: wS * 0.25,color:Colors.white )),
               ],
             ),
           ),
@@ -39,16 +39,17 @@ class Drawers extends StatelessWidget {
               Container(
                 height: hS * 6.5,
                 width: double.infinity,
-                color: Colors.amber,
+                color: Colors.green,
               ),
-              Positioned(
+              const Positioned(
                 bottom: 0,
                 left: 110,
                 child: CircleAvatar(
-                  child:
-                      Icon(Icons.person_rounded, size: 30, color: Colors.white),
-                  backgroundColor: Colors.green,
+                  backgroundColor: Colors.orange,
                   radius: 30,
+                  child:
+                      Icon(Icons.person_rounded, size: 30,
+                          color: Colors.white),
                 ),
               )
             ]),
@@ -61,7 +62,7 @@ class Drawers extends StatelessWidget {
               DrawerListTile(
                   svg: "settings",
                   title: "Delivery Address",
-                  page: DeliveryLocation()),
+                  page: DeliveryMap()),
               DrawerListTile(
                   svg: "phone", title: "Contact Us", page: ContactUs())
             ]),

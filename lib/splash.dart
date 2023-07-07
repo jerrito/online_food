@@ -13,7 +13,7 @@ class IndexPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<UserProvider>(
+    return Consumer<CustomerProvider>(
       builder: (context, userProvider, widget) {
         if (userProvider.appUser != null) {
           return const HomePage();
@@ -36,10 +36,10 @@ class _SplashscreenState extends State<Splashscreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 0), () {
-      // FlutterNativeSplash.remove();
+    Future.delayed(const Duration(seconds: 0), () {
+      //FlutterNativeSplash.remove();
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => IndexPage()));
+          context, MaterialPageRoute(builder: (context) => const IndexPage()));
     });
   }
 

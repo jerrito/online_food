@@ -54,6 +54,11 @@ dependencies:
   toggle_switch: ^2.1.0
   flutter_switch: ^0.3.2
   mongo_dart: ^0.9.1
+  sqflite: ^2.2.8+4
+  path: ^1.8.3
+  flutter_osm_plugin: ^0.55.3
+  open_street_map_search_and_pick: ^0.0.17
+  fluttertoast: ^8.2.2
 
 
 dev_dependencies:

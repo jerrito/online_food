@@ -13,18 +13,18 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Settings")),
+        appBar: AppBar(title: const Text("Settings")),
         body: Container(
-            child: Column(
+            child: const Column(
           children: [
-            const Text("Push Notifications"),
-            const SizedBox(height: 20),
+            Text("Push Notifications"),
+            SizedBox(height: 20),
             SettingSwitching(title: "Allow Push Notifications"),
-            const SizedBox(height: 10),
+            SizedBox(height: 10),
             SettingSwitching(title: "Order Updates"),
-            const SizedBox(height: 10),
+            SizedBox(height: 10),
             SettingSwitching(title: "New Arrivals"),
-            const SizedBox(height: 10),
+            SizedBox(height: 10),
             SettingSwitching(title: "Promotions"),
           ],
         )));

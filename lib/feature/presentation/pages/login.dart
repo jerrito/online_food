@@ -28,7 +28,7 @@ class _LoginSignUpState extends State<LoginSignUp> {
   String countryCode = "+233";
   String countryShortCode = "Gh";
   var firebaseService = FirebaseServices();
-  UserProvider? userProvider;
+  CustomerProvider? customerProvider;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   GlobalKey<FormState> formLogin = GlobalKey();
   bool loadingornot = false;
@@ -40,7 +40,7 @@ class _LoginSignUpState extends State<LoginSignUp> {
   bool obscure_2 = true;
   @override
   void initState() {
-    userProvider = context.read<UserProvider>();
+    customerProvider = context.read<CustomerProvider>();
     pic = (pics[Random().nextInt(pics.length)]).toString();
     Random().nextInt(pics.length);
     super.initState();
@@ -85,15 +85,15 @@ class _LoginSignUpState extends State<LoginSignUp> {
                             style: TextStyle(
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black),
+                                ),
                           ),
                         ),
                         const SizedBox(height: 10),
                         Center(
                           child: CircleAvatar(
-                            backgroundColor: Colors.grey,
+                            backgroundColor: Colors.green,
                             radius: hS * 15,
-                            backgroundImage: Image.asset("./assets/images/$pic",
+                            backgroundImage: Image.asset("./assets/images/deliver.png",
                                     height: h / 3,
                                     width: w,
                                     fit: BoxFit.scaleDown)
@@ -116,7 +116,7 @@ class _LoginSignUpState extends State<LoginSignUp> {
                   ),
                   SecondaryButton(
                     foregroundColor: Colors.white,
-                    backgroundColor: Colors.pink,
+                    backgroundColor: Colors.green,
                     onPressed: loadingornot
                         ? null
                         : () async {
@@ -124,7 +124,7 @@ class _LoginSignUpState extends State<LoginSignUp> {
                               await loginWithPhoneNumber();
                             }
                           },
-                    color: Colors.pink,
+                    color: Colors.green,
                     text: "Login",
                   ),
                   Padding(
@@ -178,10 +178,10 @@ class _LoginSignUpState extends State<LoginSignUp> {
       loadingornot = true;
     });
     String completeNumber = "$countryCode${number.text}";
-    var result = await userProvider?.getUser(phoneNumber: completeNumber);
+    var result = await customerProvider?.getUser(phoneNumber: completeNumber);
     // print("start_2");
 
-    if (result?.status == QueryStatus.Successful) {
+    if (result?.status == QueryStatus.successful) {
       var user = result?.data;
       // print("this is ${user?.number}");
       if (user?.number == completeNumber) {
@@ -220,8 +220,11 @@ class _LoginSignUpState extends State<LoginSignUp> {
       // );
 
       return;
-    } else if (result?.status == QueryStatus.Failed) {
+    } else if (result?.status == QueryStatus.failed) {
       if (!context.mounted) return;
+      setState(() {
+        loadingornot = false;
+      });
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         duration: Duration(seconds: 5),
         content:
@@ -321,9 +324,11 @@ class _LoginSignUpState extends State<LoginSignUp> {
                 //name: username.text,
                 see: "register",
                 onSuccessCallback: () async {
-                  var result_2 = await userProvider?.getUser(
+                  if (!context.mounted) return;
+                  customerProvider=context.read<CustomerProvider>();
+                  var result_2 = await customerProvider?.getUser(
                       phoneNumber: "$countryCode${number.text}");
-                  if (result_2?.status == QueryStatus.Successful) {
+                  if (result_2?.status == QueryStatus.successful) {
                     if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       duration: const Duration(seconds: 5),

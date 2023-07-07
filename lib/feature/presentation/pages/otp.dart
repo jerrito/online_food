@@ -155,10 +155,13 @@ class _OTPVerifyState extends State<OTPVerify> {
                     onChanged: onKeyPressed,
                     keyboardType: TextInputType.number,
                     controller: otpBox,
-                    otpFieldStyle: OtpFieldStyle(),
+                    otpFieldStyle: OtpFieldStyle(
+                      borderColor: Colors.green,
+                      enabledBorderColor: Colors.green
+                    ),
                     width: MediaQuery.of(context).size.width,
                     fieldWidth: wS * 13.89,
-                    style: const TextStyle(fontSize: 17),
+                    style: const TextStyle(fontSize: 17,),
                     textFieldAlignment: MainAxisAlignment.spaceAround,
                     //fieldStyle: F,
                     onCompleted: (val) async {

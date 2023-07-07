@@ -12,22 +12,23 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Profile")),
+        appBar: AppBar(title: const Text("Profile")),
         body: Container(
-            padding: EdgeInsets.all(10),
+            color: const Color.fromRGBO(245, 245, 245, 0.6),
+            padding: const EdgeInsets.all(10),
             child: Column(
               children: [
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 CircleAvatar(
                   radius: 100,
-                  backgroundColor: Colors.amber,
+                  backgroundColor: Colors.green,
                   backgroundImage:
                       Image.asset("./assets/images/god_of war.png").image,
                 ),
                 Flexible(
                   child: ListView(
                     children: [
-                      SizedBox(height: 50),
+                      const SizedBox(height: 50),
                       ProfileContainer(
                         title: 'Jerry Boateng',
                         onPressed: () {},
@@ -51,7 +52,7 @@ class _ProfileState extends State<Profile> {
                       ProfileContainer(
                         title: 'exit',
                         onPressed: () {
-                          Navigator.pushNamed(context, "login");
+                          Navigator.pushReplacementNamed(context, "login");
                         },
                       ),
                     ],

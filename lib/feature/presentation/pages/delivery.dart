@@ -1,193 +1,305 @@
 import 'package:flutter/material.dart';
-import 'package:online_food/feature/presentation/widgets/MainButton.dart';
-import 'package:online_food/feature/presentation/widgets/MainInput.dart';
-import 'package:online_food/main.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:online_food/snackbars.dart';
+import 'package:online_food/userProvider.dart';
+import 'package:open_street_map_search_and_pick/open_street_map_search_and_pick.dart';
+import 'package:online_food/user.dart';
+import 'package:online_food/firebase_services.dart';
+import 'package:provider/provider.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
-class DeliveryLocation extends StatefulWidget {
-  const DeliveryLocation({Key? key}) : super(key: key);
+class DeliveryMap extends StatefulWidget with OSMMixinObserver{
+  const DeliveryMap({super.key});
 
   @override
-  State<DeliveryLocation> createState() => _DeliveryLocationState();
+  State<DeliveryMap> createState() => _DeliveryMapState();
+
+  @override
+  Future<void> mapIsReady(bool isReady) {
+    // TODO: implement mapIsReady
+    throw UnimplementedError();
+  }
+
+
 }
 
-class _DeliveryLocationState extends State<DeliveryLocation> {
-  String regionValue = "Greater Accra";
-  var regionItems = [
-    "Greater Accra",
-    "Ashanti",
-    "Eastern",
-    "Western",
-    "Central",
-    "Nothern",
-    "Upper East",
-    "Upper West",
-    "Savannah",
-    "Oti",
-    "Bono",
-    "Ahafo",
-    "North East",
-    "Western North",
-  ];
-  bool iconThemeCheck = true;
-  bool saveLoading = false;
+class _DeliveryMapState extends State<DeliveryMap> with OSMMixinObserver{
+
+  final GlobalKey<ScaffoldMessengerState> _scaffoldMessenger=
+  GlobalKey<ScaffoldMessengerState>();
+  var firebase=FirebaseServices();
+  final mapController = MapController.withUserPosition(
+    trackUserLocation: const UserTrackingOption(
+      enableTracking: true,
+      unFollowUser: false,
+    ),
+    //areaLimit: BoundingBox.
+  );
+  CustomerProvider? customerProvider;
+  int _index=0;
+  double latitude=5;
+  double longitude=-1;
+  String location="";
+
+  bool isLoading = false;
+  @override
+  void initState(){
+    super.initState();
+    _index=0;
+    customerProvider=context.read<CustomerProvider>();
+    print(customerProvider?.appUser?.id);
+    mapController.addObserver(this);
+    onSingleTap(GeoPoint(latitude: 5, longitude: -1));
+  }
+  Future<void> mapIsReady(bool isReady) {
+    // TODO: implement mapIsReady
+    throw UnimplementedError();
+  }
+  @override
+  Future<void> mapRestored() async {
+    super.mapRestored();
+    /// TODO
+  }
+  @override
+  Future<void> onSingleTap(GeoPoint position) async{
+    super.onSingleTap(GeoPoint(latitude: 5, longitude:-1));
+    mapController.listenerMapSingleTapping.addListener(() {
+      if (mapController.listenerMapSingleTapping.value != null) {
+        /// put you logic here
+        setState(() {
+          latitude=mapController.listenerMapSingleTapping.value!.latitude;
+          longitude=mapController.listenerMapSingleTapping.value!.longitude;
+        });
+        showMap(latitude,longitude);
+        print(mapController.listenerMapSingleTapping.value?.latitude);
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content:Text("Location: ${mapController.listenerMapSingleTapping.value}")));
+      }
+    });
+    /// TODO
+  }
+
+  // @override
+  // void onLongTap(GeoPoint position) {
+  //   super.onLongTap();
+  //   /// TODO
+  //
+  // }
+
+  // @override
+  // void onRegionChanged(Region region) {
+  //   super.onRegionChanged(
+  //       Region(center: center, boundingBox: boundingBox));
+  //   /// TODO
+  //
+  // }
+
+  // @override
+  // void onRoadTap(RoadInfo road) {
+  //   super.onRoadTap();
+  //   /// TODO
+  //
+  // }
+
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Delivery Address')),
-      body: Container(
-        // width: SizeConfig.blockSizeHorizontal,
-        // height: SizeConfig.blockSizeVertical * 71.652,
-        decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-        margin: const EdgeInsets.all(10),
-        child: Form(
-          // key: location,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                  child: ListView(children: [
-                const Text("Select Region",
-                    style: TextStyle(
-                      //color: Colors.grey,
-                      fontSize: 20,
-                    )),
-                Container(
-                  height: 80,
-                  width: w - 20, //alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                          color: Colors.black,
-                          width: 1,
-                          style: BorderStyle.solid)),
-                  child: DropdownButton(
-                      value: regionValue,
-                      dropdownColor: Colors.grey,
-                      // !iconThemeCheck ? Colors.grey : Colors.white,
-                      style: TextStyle(color: Colors.white),
-                      icon: Icon(Icons.keyboard_arrow_down,
-                          color: Colors.amberAccent
-                          //!iconThemeCheck ? Colors.amberAccent : Colors.black,
-                          ),
-                      items: regionItems.map((String items) {
-                        return DropdownMenuItem(
-                          value: items,
-                          onTap: () {},
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              // SizedBox(width: SizeConfig.blockSizeHorizontal*5.56,),
-                              Text(items,
-                                  style: TextStyle(
-                                      color: !iconThemeCheck
-                                          ? Colors.amberAccent
-                                          : Colors.black)),
-                              SizedBox(
-                                width: (w - 20) - 117,
-                              )
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                      // After selecting the desired option,it will
-                      // change button value to selected value
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          regionValue = newValue!;
-                          // region = regionValue;
-                        });
-                      }),
-                ),
-                SizedBox(height: hS * 2.84375),
-                const Text("Address",
-                    style: TextStyle(
-                      //color: Colors.grey,
-                      fontSize: 20,
-                    )),
-                SecondaryInput(
-                  //initialValue: user?.address,
-                  onChanged: (value) {
-                    //  address = value;
-                  },
-                  // validator: inputValidator,
-                  // controller: usernumber,
-                  keyboardType: TextInputType.text,
-                  hintText: "Stephen", obscureText: false,
-                ),
-                SizedBox(height: hS * 2.84375),
-                const Text("Nearest Landmark",
-                    style: TextStyle(
-                      //color: Colors.grey,
-                      fontSize: 20,
-                    )),
-                Focus(
-                  onFocusChange: (sees) {
-                    setState(() {
-                      //see = false;
-                    });
-                  },
-                  child: SecondaryInput(
-                    //initialValue: user?.landmark,
-                    obscureText: false,
-                    onChanged: (value) {
-                      // landmark = value;
-                      setState(() {
-                        //  see = true;
-                        // appear = value;
-                      });
-                    },
-                    // validator: inputValidator,
-                    // controller: usernumber,
-                    keyboardType: TextInputType.text,
-                    hintText: "",
-                  ),
-                ),
-              ])),
-              SizedBox(height: hS * 14.75),
-              SizedBox(
-                width: 340,
-                child: MainButton(
-                  onPressed: () async {
-                    //if (location.currentState?.validate() == true) {
-                    setState(() {
-                      //saveLoading = true;
-                    });
-                    //var userData = user;
-                    // userData?.address = address;
-                    // userData?.region = region;
-                    // userData?.landmark = landmark;
-                    // await updateUser(user: userData!);
-                    setState(() {
-                      //saveLoading = false;
-                    });
-                    Navigator.pop(context);
-                    //}
-                  },
-                  color: Colors.pink,
-                  backgroundColor: Colors.pink,
-                  child: Visibility(
-                    visible: saveLoading,
-                    child: SizedBox(
-                      // width: Dimens.iconNormal,
-                      // height: Dimens.iconNormal,
-                      child: Text(""),
+      appBar: AppBar(title: const Text('Delivery Address')),
+      bottomNavigationBar: BottomNavigationBar(
+        onTap:(index){
+          if(index==0){
+            setState(() {
+              _index=index;
+              mapController.myLocation();
+            });
+          }
+          else if(index==1){
+            setState(() {
+              _index=index;
+           showMap(5,-1);
+            });
+          }
+
+        },
+        currentIndex: _index,
+        items: const [
+          BottomNavigationBarItem(
+            label: "Current Location",
+              icon: Icon(Icons.location_on)),
+          BottomNavigationBarItem(
+              label: "Search",
+              icon: Icon(Icons.search))
+          ],),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async{
+          await mapController.myLocation();
+           //await mapController.setZoom(zoomLevel: 16,stepZoom: 2);
+          // await mapController.zoomIn();
+
+          // print(mapController.listenerMapSingleTapping.value);
+
+
+        //print(mapController.geopoints.);
+        },
+        child:const Icon(Icons.my_location)
+      ),
+      body:Consumer<CustomerProvider>(
+        builder: (context,customerProvider,child) {
+          return Container(
+              decoration: BoxDecoration(
+                  color:Colors.grey,
+                  borderRadius: BorderRadius.circular(10)
+              ),
+              width:double.infinity,//height: 400,
+              child:Stack(
+                children: [
+                  OSMFlutter(
+                   // mapIsLoading:const CircularProgressIndicator(),
+                    controller:mapController,
+                    userTrackingOption: const UserTrackingOption(
+                      enableTracking: true,
+                      unFollowUser: false,
                     ),
-                    replacement: const Text(
-                      "Save",
-                      style: TextStyle(
-                        fontSize: 16,
-                        letterSpacing: 3,
+                    //isPicker: true,
+                    initZoom: 16,
+                    minZoomLevel: 2,
+                    maxZoomLevel: 18,
+                    stepZoom: 1.0,
+                    userLocationMarker: UserLocationMaker(
+                      personMarker: const MarkerIcon(
+                        icon: Icon(
+                          Icons.location_history_rounded,
+                          color: Colors.red,
+                          size: 48,
+                        ),
+                      ),
+                      directionArrowMarker: const MarkerIcon(
+                        icon: Icon(
+                          Icons.double_arrow,
+                          size: 48,
+                        ),
                       ),
                     ),
+                    roadConfiguration: const RoadOption(
+                      roadColor: Colors.yellowAccent,
+                    ),
+                    markerOption: MarkerOption(
+                        defaultMarker: const MarkerIcon(
+                          icon: Icon(
+                            Icons.person_pin_circle,
+                            color: Colors.blue,
+                            size: 56,
+                          ),
+                        )
+                    ),
                   ),
-                ),
-              ),
-            ],
-          ),
-        ),
+                 // Positioned(
+                  //   top:20,left:30,
+                  //   child:CarouselSlider(
+                  //     items:[
+                  //       Container(
+                  //         width:150,
+                  //           child: Text("Tap on the position")),
+                  //     ],
+                  //     options:CarouselOptions(
+                  //       height:20,//width:double.infinity,
+                  //       viewportFraction: 0.9,
+                  //       autoPlay: true,
+                  //     )
+                  //   )
+                  // )
+                ],
+              )
+          );
+        }
       ),
     );
+  }
+  void showMap( double lat,double long){
+    showModalBottomSheet(
+        shape:RoundedRectangleBorder(
+            borderRadius:BorderRadius.circular(10)),
+        context: context,
+        builder: (BuildContext context){
+          return StatefulBuilder(
+              builder: (context,setState) {
+                return Container(
+                  height:MediaQuery.of(context).size.height*75,
+                  width:double.infinity,
+                  decoration:BoxDecoration(
+                      borderRadius:BorderRadius.circular(10)),
+                  child:OpenStreetMapSearchAndPick(
+                    center: LatLong(lat,long),
+                    buttonColor: Colors.green,
+                    buttonText: 'Set Current Location',
+                    onPicked: (pickedData) async{
+                     // print("ff");
+
+                        setState((){
+                          longitude=pickedData.latLong.longitude;
+                          latitude=pickedData.latLong.latitude;
+                          location=pickedData.address;
+                        });
+
+
+
+
+                     await locationDetails(customer:customerProvider?.appUser);
+
+                      // print(pickedData.latLong.latitude);
+                      // print(pickedData.latLong.longitude);
+                      // print(pickedData.address);
+
+                    },
+                  ),
+                );
+              }
+          );
+        });
+  }
+  Future<void> locationDetails({required Customer? customer})async{
+    var customers=customer;
+    double? long=customer?.longitude;
+    double? lat=customer?.latitude;
+    String? loc=customer?.location;
+    long=longitude;
+    loc=location;
+    lat=latitude;
+
+   customers?.longitude=long;
+    customers?.latitude=lat;
+    customers?.location=loc;
+    //customers?.id=customerProvider?.appUser?.id;
+    // print(customer?.location);
+    // print(customer?.longitude);
+
+    await updateUser(customer: customers!);
+  }
+  updateUser({required Customer customer}) async {
+    //print("ss");
+    var result = await customerProvider?.updateUser(customer: customer);
+    if (result?.status == QueryStatus.successful) {
+      //print("s");
+      if(!context.mounted)return;
+      PrimarySnackBar(context).displaySnackBar(
+        message: "Location updated successfully",
+        //backgroundColor: AppColors.colorPrimary,
+      );
+      Navigator.pushReplacementNamed(context, "home");
+
+      return;
+    }
+    if (result?.status == QueryStatus.failed) {
+      print("f");
+      setState(() {
+        isLoading = false;
+      });
+      if(!context.mounted)return;
+      PrimarySnackBar(context).displaySnackBar(
+        message: "Error saving location details",
+       // backgroundColor: AppColors.errorRed,
+      );
+    }
   }
 }

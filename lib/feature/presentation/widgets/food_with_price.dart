@@ -6,7 +6,7 @@ class FoodWithPrice extends StatelessWidget {
   final String image;
   final String name;
   final String title;
-  final String amount;
+  final double amount;
 
   const FoodWithPrice(
       {Key? key,
@@ -54,7 +54,7 @@ class FoodWithPrice extends StatelessWidget {
             const SizedBox(height: 5),
             Text(title),
             const SizedBox(height: 10),
-            Text(amount,
+            Text(amount.toString(),
                 style: const TextStyle(
                     fontWeight: FontWeight.bold, color: Colors.black))
           ]),
@@ -68,12 +68,13 @@ class FoodCategory extends StatelessWidget {
   final Function() onTap;
   final String image;
   final String name;
+  final double amount;
 
   const FoodCategory({
     Key? key,
     required this.onTap,
     required this.image,
-    required this.name,
+    required this.name, required this.amount,
   }) : super(key: key);
 
   @override

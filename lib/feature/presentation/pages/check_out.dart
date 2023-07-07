@@ -14,7 +14,7 @@ class _CheckOutState extends State<CheckOut> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Check Out"),
+        title: const Text("Check Out"),
       ),
       body: Container(
           child: Column(
@@ -22,14 +22,14 @@ class _CheckOutState extends State<CheckOut> {
           Expanded(
             child: ListView(
               children: [
-                SizedBox(height: 20),
-                ListTile(
+                const SizedBox(height: 20),
+                const ListTile(
                     leading: Text("Payment"),
                     trailing: Text("Cash on delivery")),
-                ListTile(
+                const ListTile(
                     leading: Text("Deliver to"),
                     trailing: Text("Kwaprow Pimag Hostel")),
-                ListTile(leading: Text("Total"), trailing: Text("70 GHc")),
+                const ListTile(leading: Text("Total"), trailing: Text("70 GHc")),
               ],
             ),
           ),
@@ -37,17 +37,12 @@ class _CheckOutState extends State<CheckOut> {
             width: double.infinity,
             child: MainButton(
               onPressed: () async {
-                //Navigator.pop(context);
+                Navigator.pushNamed(context,"your_order");
               },
-              color: Colors.pink,
-              backgroundColor: Colors.pink,
+              color: Colors.green,
+              backgroundColor: Colors.green,
               child: Visibility(
                 visible: saveLoading,
-                child: SizedBox(
-                  // width: Dimens.iconNormal,
-                  // height: Dimens.iconNormal,
-                  child: Text(""),
-                ),
                 replacement: const Text(
                   "Place Order",
                   style: TextStyle(
@@ -55,10 +50,15 @@ class _CheckOutState extends State<CheckOut> {
                     letterSpacing: 3,
                   ),
                 ),
+                child: const SizedBox(
+                  // width: Dimens.iconNormal,
+                  // height: Dimens.iconNormal,
+                  child: Text(""),
+                ),
               ),
             ),
           ),
-          SizedBox(height: 10)
+          const SizedBox(height: 10)
         ],
       )),
     );

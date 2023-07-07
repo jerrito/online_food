@@ -14,7 +14,7 @@ class DrawerListTile extends StatelessWidget {
     return ListTile(
       leading: SvgPicture.asset(
         "./assets/svgs/$svg.svg",
-        color: Colors.amberAccent,
+        color: Colors.green,
       ),
       title: Text(title,
           style: TextStyle(
