@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:online_food/feature/presentation/pages/contact_us.dart';
 import 'package:online_food/feature/presentation/pages/delivery.dart';
+import 'package:online_food/feature/presentation/pages/ordered_food.dart';
 import 'package:online_food/feature/presentation/pages/profile.dart';
 import 'package:online_food/feature/presentation/pages/settings.dart';
 import 'package:online_food/feature/presentation/widgets/drawer_list_tile.dart';
@@ -60,9 +61,13 @@ class Drawers extends StatelessWidget {
               DrawerListTile(
                   svg: "settings", title: "Settings", page: Settings()),
               DrawerListTile(
-                  svg: "settings",
+                  svg: "map-pin",
                   title: "Delivery Address",
                   page: DeliveryMap()),
+              DrawerListTile(
+                  svg: "package",
+                  title: "Orders",
+                  page: OrderedFood()),
               DrawerListTile(
                   svg: "phone", title: "Contact Us", page: ContactUs())
             ]),

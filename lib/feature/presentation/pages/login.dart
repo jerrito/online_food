@@ -12,6 +12,7 @@ import 'package:online_food/feature/presentation/widgets/MainButton.dart';
 import 'package:online_food/feature/presentation/widgets/MainInput.dart';
 import 'package:online_food/firebase_services.dart';
 import 'package:online_food/main.dart';
+import 'package:online_food/snackbars.dart';
 import 'package:online_food/userProvider.dart';
 import 'package:provider/provider.dart';
 
@@ -199,12 +200,16 @@ class _LoginSignUpState extends State<LoginSignUp> {
         return;
       } else {
         if (!context.mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          duration: Duration(seconds: 5),
-          content: Text("Number is not registered",
-              style: TextStyle(color: Colors.white)),
-          backgroundColor: Color.fromRGBO(20, 100, 150, 1),
-        ));
+        PrimarySnackBar(context).displaySnackBar(
+          message:AppStrings.unregisteredNumber,
+          backgroundColor:Colors.red,
+        );
+        // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        //   duration: Duration(seconds: 5),
+        //   content: Text("Number is not registered",
+        //       style: TextStyle(color: Colors.white)),
+        //   backgroundColor: Color.fromRGBO(20, 100, 150, 1),
+        // ));
         setState(() {
           loadingornot = false;
         });

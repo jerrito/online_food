@@ -11,6 +11,7 @@ import 'package:online_food/feature/presentation/pages/home.dart';
 //import 'package:online_food/homePage.dart';
 import 'package:online_food/feature/presentation/pages/login.dart';
 import 'package:online_food/feature/presentation/pages/order_map.dart';
+import 'package:online_food/feature/presentation/pages/ordered_food.dart';
 import 'package:online_food/feature/presentation/pages/signUp.dart';
 import 'package:online_food/feature/presentation/pages/specific_buy_item.dart';
 import 'package:online_food/feature/presentation/pages/your_order.dart';
@@ -24,6 +25,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:theme_manager/theme_manager.dart';
+import 'package:device_preview/device_preview.dart';
 
 int indexed = 0;
 double w = SizeConfig.W;
@@ -56,11 +58,17 @@ Future<void> main() async {
     join(await getDatabasesPath(), 'pashewCart.db'),
     onCreate: (db, version) {
       return db.execute(
-          'CREATE TABLE IF NOT EXISTS CARTDATA ( name TEXT PRIMARY KEY, amount INTEGER,totalAmount INTEGER, title TEXT, quantity INTEGER)');
+          'CREATE TABLE IF NOT EXISTS CARTTABLE  ( name TEXT PRIMARY KEY, amount INTEGER,totalAmount INTEGER, title TEXT, quantity INTEGER, id TEXT)');
     },
     version: 1,
   );
-  runApp(const AppPage());
+  runApp(
+
+       DevicePreview(
+         builder: (context) {
+           return  const AppPage();
+         }
+       ));
 }
 
 class AppPage extends StatelessWidget {
@@ -80,16 +88,17 @@ class AppPage extends StatelessWidget {
             defaultBrightnessPreference: BrightnessPreference.system,
             data: (Brightness brightness) => ThemeData(
               // colorScheme: ColorScheme.fromSeed(
-              //   primary: Color.fromRGBO(50, 250,40, 1),
-              //     seedColor: Color.fromRGBO(50, 250,40, 1)),
+              //   primary: Theme.of(context).primaryColorDark,
+              //     seedColor: const Color.fromRGBO(50, 250,40, 1)),
               useMaterial3: true,
-                  // primarySwatch: brightness == Brightness.dark
-                  //     ? Colors.amber
-                  //     : Colors.green,
+                  primarySwatch: brightness == Brightness.dark
+                      ? Colors.amber
+                      : Colors.green,
+
                   primaryIconTheme: IconThemeData(
                       color: brightness == Brightness.dark
                           ? Colors.amber
-                          : Colors.green),
+                          : Theme.of(context).primaryColorDark),
                   textTheme: Theme.of(context).textTheme.apply(
                       fontFamily: "PlayfairDisplay-VariableFont_wght",
                       decorationColor: brightness == Brightness.dark
@@ -119,6 +128,9 @@ class AppPage extends StatelessWidget {
                   ],
                   child: MaterialApp(
 
+                    //useInheritedMediaQuery: true,
+                    locale: DevicePreview.locale(context),
+                    builder: DevicePreview.appBuilder,
                     supportedLocales: const [
                       Locale("af"),
                       Locale("am"),
@@ -209,6 +221,7 @@ class AppPage extends StatelessWidget {
                      // "delivery": (context) => const DeliveryLocation(),
                       "your_order": (context) => const YourOrder(),
                       "orderMap": (context) => const OrderMap(),
+                      "ordered_food": (context) => const OrderedFood(),
 
                     },
                   ));

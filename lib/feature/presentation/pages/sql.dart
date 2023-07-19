@@ -4,6 +4,7 @@ import 'package:sqflite/sqflite.dart';
 
 
 class CartData {
+  String? id;
    String? name;
    String? title;
    int? amount;
@@ -12,6 +13,7 @@ class CartData {
 
    CartData({
     required this.name,
+    required this.id,
     required this.amount,
     required this.quantity,
     required this.title,
@@ -23,6 +25,7 @@ class CartData {
    Map<String, dynamic> toMap() {
      return {
        'name': name,
+       'id': id,
        'amount': amount,
        'totalAmount': totalAmount,
        'title': title,
@@ -63,6 +66,7 @@ class SQL {
     return List.generate(maps.length, (i) {
       return CartData(
         name: maps[i]['name'],
+        id: maps[i]['id'],
         amount: maps[i]['amount'],
         totalAmount: maps[i]['totalAmount'],
         quantity: maps[i]['quantity'],
@@ -80,9 +84,9 @@ class SQL {
     // await  txn.execute("CREATE UNIQUE INDEX idx_positions_title ON CARTDATA (name);"
     //       );
       int id1 = await txn.rawInsert(
-          'REPLACE INTO CARTDATA(name, amount, title,quantity,totalAmount) VALUES("${cartData
+          'REPLACE INTO CARTTABLE (name, amount, title,quantity,totalAmount, id) VALUES("${cartData
               .name}", "${cartData.amount}", "${cartData.title}","${cartData
-              .quantity}", "${cartData.totalAmount}")');
+              .quantity}", "${cartData.totalAmount}", "${cartData.id}")');
       // await txn.rawUpdate('UPDATE CARTS SET AMOUNT = 100 WHERE id="${cartData.name}"');
       print('inserted1: $id1');
     });
@@ -93,7 +97,7 @@ Future<void> updateSQL(CartData cartData)async {
     version: 1,);
   final db = await database;
   int update=  await db.rawUpdate(
-        'UPDATE CARTDATA SET totalAmount="${cartData.totalAmount}", quantity="${cartData.quantity}" WHERE name="${cartData.name}"');
+        'UPDATE CARTTABLE  SET totalAmount="${cartData.totalAmount}", quantity="${cartData.quantity}" WHERE name="${cartData.name}"');
   print("Updated:$update");
   }
   Future<void> deleteSQL(CartData cartData)async {
@@ -102,7 +106,7 @@ Future<void> updateSQL(CartData cartData)async {
       version: 1,);
     final db = await database;
     int delete=  await db.rawUpdate(
-        'DELETE FROM CARTDATA  WHERE name="${cartData.name}"');
+        'DELETE FROM CARTTABLE   WHERE name="${cartData.name}"');
     print("Deleted:$delete");
   }
 }

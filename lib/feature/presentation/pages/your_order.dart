@@ -74,6 +74,7 @@ class YourOrder extends StatelessWidget {
                   ],
                 ),
               ),
+              SizedBox(height:10),
               MainButton(
                 onPressed: () {
                   Navigator.pushNamed(context,"orderMap");

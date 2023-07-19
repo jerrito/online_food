@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:online_food/main.dart';
 
 class FoodWithPrice extends StatelessWidget {
   final Function() onTap;
@@ -19,45 +20,75 @@ class FoodWithPrice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: SizedBox(
-        width: 190,
-        height: 100,
-        child: Container(
-          width: 190,
-          height: 100,
-          decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10)),
-          child: Column(children: [
-            CircleAvatar(
-              radius: 50,
-              backgroundColor: Colors.white,
-              backgroundImage: Image.asset(
-                "./assets/images/$image",
-                fit: BoxFit.fitWidth,
-              ).image,
-            ),
-            // Image.asset(
-            //   "./assets/images/$image",
-            //   height: 85,
-            //   width: 180,
-            // ),
-            const SizedBox(height: 10),
-            Text(
-              name,
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold, color: Colors.black),
-            ),
-            const SizedBox(height: 5),
-            Text(title),
-            const SizedBox(height: 10),
-            Text(amount.toString(),
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold, color: Colors.black))
-          ]),
+    return SizedBox(
+      height:hS*15.625,
+      width:wS*52.78,
+      child: InkWell(
+        onTap: onTap,
+        child: Column(
+          children: [
+            SizedBox(
+              width:wS*52.78,
+              height: hS*13,
+              child: Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+              Container(
+              width:  wS*52.78,
+                height:( MediaQuery.sizeOf(context).height/100)*7,
+                decoration: const BoxDecoration(
+                   // shape: BoxShape.rectangle,
+                    color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10)),)),
+                Positioned(
+                  top:0,left:wS*12.5,
+                  child: CircleAvatar(
+                    radius:50,
+                    backgroundColor: Colors.white,
+                    backgroundImage: Image.asset(
+                      "./assets/images/$image",
+                      fit: BoxFit.fitWidth,
+                    ).image,
+                  ),
+                ),
+                  ]),),
+                // Image.asset(
+                //   "./assets/images/$image",
+                //   height: 85,
+                //   width: 180,
+                // ),
+               // const SizedBox(height: 10),
+                Container(
+                  width: (w/100)*52.78,
+                  height:
+                  hS*12,
+                  decoration: const BoxDecoration(
+                    // shape: BoxShape.rectangle,
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(10),
+                        bottomRight: Radius.circular(10)),),
+                  child: Column(
+                    children: [
+                      Text(
+                        name,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.black),
+                      ),
+               const SizedBox(height: 5),
+                Text(title),
+                const SizedBox(height: 10),
+                Text(amount.toString(),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black))
+                    ],
+                  ),
+                ),
+
+          ],
         ),
       ),
     );
@@ -84,14 +115,11 @@ class FoodCategory extends StatelessWidget {
         child: Column(children: [
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: CircleAvatar(
-              radius: 50,
-              backgroundColor: Colors.white,
-              backgroundImage: Image.asset(
+            child:Image.asset(
                 "./assets/images/$image",
-                fit: BoxFit.fitWidth,
-              ).image,
-            ),
+                fit: BoxFit.scaleDown,
+              ),
+
           ),
           // Container(
           //     height: 100,

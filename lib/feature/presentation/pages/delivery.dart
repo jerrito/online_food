@@ -70,14 +70,15 @@ class _DeliveryMapState extends State<DeliveryMap> with OSMMixinObserver{
           latitude=mapController.listenerMapSingleTapping.value!.latitude;
           longitude=mapController.listenerMapSingleTapping.value!.longitude;
         });
-        showMap(latitude,longitude);
-        print(mapController.listenerMapSingleTapping.value?.latitude);
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content:Text("Location: ${mapController.listenerMapSingleTapping.value}")));
+
+        //print(mapController.listenerMapSingleTapping.value?.latitude);
+       // ScaffoldMessenger.of(context).showSnackBar(
+          //  SnackBar(content:Text("Location: ${mapController.listenerMapSingleTapping.value}")));
       }
     });
-    /// TODO
+    showMap(latitude,longitude);
   }
+
 
   // @override
   // void onLongTap(GeoPoint position) {

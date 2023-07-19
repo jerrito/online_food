@@ -15,6 +15,7 @@ class _SettingsState extends State<Settings> {
     return Scaffold(
         appBar: AppBar(title: const Text("Settings")),
         body: Container(
+            color: const Color.fromRGBO(245, 245, 245, 0.6),
             child: const Column(
           children: [
             Text("Push Notifications"),

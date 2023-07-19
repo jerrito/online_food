@@ -7,11 +7,12 @@ import 'package:toggle_switch/toggle_switch.dart';
 
 class Buying extends StatefulWidget {
   final String image;
+  final String id;
   final String name ;
-  final String title;
+  final String restaurantName;
   final double amount;
-  const Buying({Key? key, required this.image,
-    required this.name, required this.title,
+  const Buying({Key? key, required this.image,required this.id,
+    required this.name, required this.restaurantName,
     required this.amount}) : super(key: key);
 
   @override
@@ -27,7 +28,9 @@ class _BuyingState extends State<Buying> {
     return Container(
       width: double.infinity,
       height: hS * 71.65,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
+          color: Theme.of(context).brightness==Brightness.dark?
+          Colors.grey: Color.fromRGBO(245, 245, 245, 0.6),
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(20), topRight: Radius.circular(20))),
       margin: const EdgeInsets.all(10),
@@ -60,8 +63,7 @@ class _BuyingState extends State<Buying> {
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.circular(20),
                   image: DecorationImage(
-                      image:Image.asset(
-    "./assets/images/${widget.image}").image))),
+                      image:Image.network(widget.image).image))),
           const SizedBox(height: 20),
           // Center(
           //     child: Text("$amount",
@@ -69,21 +71,21 @@ class _BuyingState extends State<Buying> {
           ToggleSwitch(
             minWidth: wS * 50,
             minHeight: hS * 8,
-            initialLabelIndex: 0,
+            initialLabelIndex: 1,
             cornerRadius: 20.0,
             //iconSize: 0,
             customTextStyles: const [TextStyle( fontSize: 32,fontWeight: FontWeight.bold),
               TextStyle( fontSize: 30,),TextStyle( fontWeight: FontWeight.bold,fontSize: 32,),],
             activeFgColor: Colors.black,
-            inactiveBgColor: Colors.grey,
-            inactiveFgColor: Colors.white,
+            //inactiveBgColor: Colors.grey,
+            inactiveFgColor: Colors.black,
             totalSwitches: 3,
             labels: ['-', quantity.toString(), '+'],
             //customIcons: [],
             //icons: const [Icons.minimize,Icons.note, Icons.add],
             activeBgColors: const [
               [Colors.white],
-              [Colors.red]
+              [Colors.white]
             ],
             onToggle: (index) {
               // print('switched to: $index');
@@ -104,7 +106,7 @@ class _BuyingState extends State<Buying> {
               }
             },
           ),
-          SizedBox(height: 40),
+          const SizedBox(height: 40),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -119,12 +121,14 @@ class _BuyingState extends State<Buying> {
           const SizedBox(height: 80),
           SecondaryButton(
             onPressed: () async{
-              print(pricing);
+              //print(pricing);
               // Create a Dog and add it to the dogs table
+              print(widget.id);
               var cartItem = CartData(
+                id:widget.id,
                 name: widget.name,
                 totalAmount: pricing.toInt(),
-                title: widget.title,
+                title: widget.restaurantName,
                 quantity: quantity,
                 amount: widget.amount.toInt(),
               );

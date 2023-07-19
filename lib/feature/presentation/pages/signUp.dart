@@ -13,6 +13,7 @@ import 'package:online_food/feature/presentation/widgets/MainButton.dart';
 import 'package:online_food/feature/presentation/widgets/MainInput.dart';
 import 'package:online_food/firebase_services.dart';
 import 'package:online_food/main.dart';
+import 'package:online_food/snackbars.dart';
 import 'package:online_food/user.dart' as User_main;
 import 'package:online_food/userProvider.dart';
 import 'package:provider/provider.dart';
@@ -272,25 +273,25 @@ class _SignUpPageState extends State<SignUpPage> {
         });
         //  print("Account already exist");
         if (!context.mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          duration: Duration(seconds: 5),
-          content: Text("Account already exist",
-              style: TextStyle(color: Colors.white)),
-          backgroundColor: Color.fromRGBO(20, 100, 150, 1),
-        ));
+        // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        //   duration: Duration(seconds: 5),
+        //   content: Text("Account already exist",
+        //       style: TextStyle(color: Colors.white)),
+        //   backgroundColor: Color.fromRGBO(20, 100, 150, 1),
+        // ));
 
-        // PrimarySnackBar(context).displaySnackBar(
-        //   message: AppStrings.accountExistErrorMessage,
-        //   backgroundColor: AppColors.errorRed,
-        // );
+        PrimarySnackBar(context).displaySnackBar(
+          message: AppStrings.accountExistErrorMessage,
+          backgroundColor:Colors.red,
+        );
 
         return;
       }
       phoneSignIn(phoneNumber: "$countryCode${phoneNumber.text}");
     }
-    setState(() {
-      loadingOrNot = false;
-    });
+    // setState(() {
+    //   loadingOrNot = false;
+    // });
     // print("Account error");
     // ScaffoldMessenger.of(context).showSnackBar(
     //     SnackBar(duration: Duration(seconds: 5),
@@ -328,16 +329,28 @@ class _SignUpPageState extends State<SignUpPage> {
 
   _onVerificationFailed(FirebaseAuthException exception) {
     // print("verification failed ${exception.message}");
-    if (exception.code == 'invalid-phone-number') {}
+    if (exception.code == 'invalid-phone-number') {
+      setState(() {
+        loadingOrNot = false;
+      });
+      PrimarySnackBar(context).displaySnackBar(
+        message: AppStrings.invalidPhoneNumber,
+        backgroundColor:Colors.red,
+      );
+    }
     setState(() {
       loadingOrNot = false;
     });
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      duration: Duration(seconds: 5),
-      content: Text("Verification failed. Please try again",
-          style: TextStyle(color: Colors.white)),
-      backgroundColor: Color.fromRGBO(20, 100, 150, 1),
-    ));
+    PrimarySnackBar(context).displaySnackBar(
+      message: AppStrings.verificationFail,
+      backgroundColor:Colors.red,
+    );
+    // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    //   duration: Duration(seconds: 5),
+    //   content: Text("Verification failed. Please try again",
+    //       style: TextStyle(color: Colors.white)),
+    //   backgroundColor: Color.fromRGBO(20, 100, 150, 1),
+    // ));
   }
 
   _onCodeSent(String verificationId, int? forceResendingToken) {
@@ -384,12 +397,16 @@ class _SignUpPageState extends State<SignUpPage> {
     var result2 = await userProvider?.getUser(
         phoneNumber: "$countryCode${phoneNumber.text}");
     if(!context.mounted)return;
-    ScaffoldMessenger.of(context).showSnackBar( SnackBar(
-      duration: const Duration(seconds: 5),
-      content: Text("Successfully registered ${userProvider?.appUser?.fullName}",
-          style: const TextStyle(color: Colors.white)),
-      backgroundColor: const Color.fromRGBO(20, 100, 150, 1),
-    ));
+    PrimarySnackBar(context).displaySnackBar(
+      message:"${AppStrings.success} ${userProvider?.appUser?.fullName}",
+      backgroundColor:Colors.green,
+    );
+    // ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+    //   duration: const Duration(seconds: 5),
+    //   content: Text("Successfully registered ${userProvider?.appUser?.fullName}",
+    //       style: const TextStyle(color: Colors.white)),
+    //   backgroundColor: const Color.fromRGBO(20, 100, 150, 1),
+    // ));
 
     // print(result2?.status);
     if (result2?.status == QueryStatus.successful) {
