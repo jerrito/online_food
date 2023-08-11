@@ -1,25 +1,25 @@
+import 'package:animate_to/animate_to.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 //import 'package:google_fonts/google_fonts.dart';
-import 'package:online_food/Size_of_screen.dart';
-import 'package:online_food/feature/presentation/pages/cart.dart';
-import 'package:online_food/feature/presentation/pages/delivery.dart';
-import 'package:online_food/feature/presentation/pages/home.dart';
+import 'package:online_food/constants/Size_of_screen.dart';
+import 'package:online_food/databases/sql_database.dart';
+import 'package:online_food/pages/cart.dart';
+import 'package:online_food/pages/delivery.dart';
+import 'package:online_food/pages/home.dart';
 //import 'package:online_food/homePage.dart';
-import 'package:online_food/feature/presentation/pages/login.dart';
-import 'package:online_food/feature/presentation/pages/order_map.dart';
-import 'package:online_food/feature/presentation/pages/ordered_food.dart';
-import 'package:online_food/feature/presentation/pages/signUp.dart';
-import 'package:online_food/feature/presentation/pages/specific_buy_item.dart';
-import 'package:online_food/feature/presentation/pages/your_order.dart';
-import 'package:online_food/feature/presentation/widgets/MainButton.dart';
+import 'package:online_food/pages/login.dart';
+import 'package:online_food/pages/order_map.dart';
+import 'package:online_food/pages/ordered_food.dart';
+import 'package:online_food/pages/signUp.dart';
+import 'package:online_food/pages/specific_buy_item.dart';
+import 'package:online_food/pages/your_order.dart';
 import 'package:online_food/firebase_options.dart';
-//import 'package:online_food/profile.dart';
 import 'package:online_food/splash.dart';
-import 'package:online_food/userProvider.dart';
+import 'package:online_food/models/userProvider.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,18 +33,6 @@ double wS = SizeConfig.SW;
 double h = SizeConfig.H;
 double hS = SizeConfig.SV;
 
-Future<Database> getDatabase()async{
-  var databasesPath = await getDatabasesPath();
-  String path = ('${databasesPath}demo.db');
-  print(path);
-  Database database = await openDatabase(path, version: 1,
-      onCreate: (Database db, int version) async {
-// When creating the db, create the table
-        await db.execute(
-            'CREATE TABLE CART (id INTEGER PRIMARY KEY, name TEXT, amount INTEGER, title TEXT)');
-      });
-  return database;
-}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,16 +42,13 @@ Future<void> main() async {
   ]);
   await Firebase.initializeApp(options:
   DefaultFirebaseOptions.currentPlatform);
-  final database = openDatabase(
-    join(await getDatabasesPath(), 'pashewCart.db'),
-    onCreate: (db, version) {
-      return db.execute(
+  final db=await Data().databases();
+   db.database.execute(
           'CREATE TABLE IF NOT EXISTS CARTTABLE  ( name TEXT PRIMARY KEY, amount INTEGER,totalAmount INTEGER, title TEXT, quantity INTEGER, id TEXT)');
-    },
-    version: 1,
-  );
-  runApp(
+  db.database.execute(
+      'CREATE TABLE IF NOT EXISTS ProductIds (id TEXT Primary KEY)');
 
+  runApp(
        DevicePreview(
          builder: (context) {
            return  const AppPage();
@@ -112,7 +97,7 @@ class AppPage extends StatelessWidget {
                           : Colors.black),
                   // GoogleFonts.montserratTextTheme(ThemeData().textTheme),
                   //accentColor: Colors.lightBlue,
-                  fontFamily: "PlayfairDisplay-VariableFont_wght",
+                  fontFamily: "Montserrat-Regular",
                   brightness: brightness,
                 ),
             // loadBrightnessOnStart: true,

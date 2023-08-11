@@ -2,9 +2,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:online_food/feature/presentation/pages/home.dart';
-import 'package:online_food/feature/presentation/pages/signUp.dart';
-import 'package:online_food/userProvider.dart';
+import 'package:online_food/pages/home.dart';
+import 'package:online_food/pages/signUp.dart';
+import 'package:online_food/models/userProvider.dart';
 import 'package:provider/provider.dart';
 //import 'package:flutter_native_splash/flutter_native_splash.dart';
 
